@@ -5,8 +5,10 @@ class Searchbar extends Component {
 
     //default search filter is "story"
     state = {
-        searchtype: "story",
-        searchby: "relevance"
+        searchtype: "",
+        searchby: "?query=",
+        text: "",
+        searchResults: ""
     };
 
     // when search filter is changed
@@ -18,12 +20,30 @@ class Searchbar extends Component {
         this.setState({ searchby: event.target.value });
     };
 
+    handleText = (event) => {
+        this.setState({ text: event.target.value })
+    }
+
     // when search button is pressed
     buildAndCall = (event) => {
         // stops reload
         event.preventDefault();
-        const defaultApi = "http://hn.algolia.com/api/v1/search";
-
+        const defaultCall = "http://hn.algolia.com/api/v1/search"
+        let text = this.state.text;
+        let tag = this.state.searchtype;
+        let searchBy = this.state.searchby;
+        let query;
+        if (text !== "" || text.replace(/\s/g, "") !== "") {
+            console.log(tag)
+            if (tag === "&author_") {
+                query = defaultCall + searchBy + "" + tag + text
+            }
+            else {
+                query = defaultCall + searchBy + text + tag
+            }
+            console.log("searching " + query);
+        }
+        else { console.log("fill in search bar") }
     };
 
     render() {
@@ -33,26 +53,26 @@ class Searchbar extends Component {
                 <h2>Hacker News Searcher</h2>
                 <form>
                     {/* Radio buttons */}
-                    <input type="radio" name="searchfilter" value="story" id="story" onChange={this.handleSearchChange} />
-                    <label for="story">Story</label>
+                    <input type="radio" name="searchfilter" value="&tags=story" id="story" onChange={this.handleSearchChange} />
+                    <label htmlFor="story">Story</label>
                     <br />
-                    <input type="radio" name="searchfilter" value="poll" id="poll" onChange={this.handleSearchChange} />
-                    <label for="poll">Poll</label>
+                    <input type="radio" name="searchfilter" value="&tags=poll" id="poll" onChange={this.handleSearchChange} />
+                    <label htmlFor="poll">Poll</label>
                     <br />
-                    <input type="radio" name="searchfilter" value="author" id="author" onChange={this.handleSearchChange} />
-                    <label for="author">Author</label>
+                    <input type="radio" name="searchfilter" value="&tags=author_" id="author" onChange={this.handleSearchChange} />
+                    <label htmlFor="author">Author</label>
                     <br />
                     {/* search box */}
-                    <input type="text" />
+                    <input type="text" onChange={this.handleText} />
                     {/* date/relevence selector */}
                     <select onChange={this.handleSearchByChange}>
-                        <option value="relevance">Relevance</option>
-                        <option value="date">Date</option>
+                        <option value="?query=">Relevance</option>
+                        <option value="_by_date?=">Date</option>
                     </select>
                     <button onClick={this.buildAndCall}>Search</button>
 
                 </form>
-                <p>search {this.state.searchtype} {this.state.searchby}</p>
+                <p>http://hn.algolia.com/api/v1/search{this.state.searchby}{this.state.text}{this.state.searchtype}</p>
             </div>
 
         )
