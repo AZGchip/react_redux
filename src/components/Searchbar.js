@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Results from "./Results"
+
 
 class Searchbar extends Component {
 constructor(props){
@@ -8,7 +8,7 @@ constructor(props){
         searchtype: "",
         searchby: "?query=",
         text: "",
-        searchResults: ""
+        searchResults: []
     };
 }
     //default search filter is "story"
@@ -27,9 +27,7 @@ constructor(props){
         this.setState({ text: event.target.value })
     }
 
-    callApi = (query) => {
-
-    }
+    
     // when search button is pressed
     buildAndCall = (event) => {
         // stops reload
@@ -54,8 +52,16 @@ constructor(props){
                 .then(res => res.json())
                 .then(
                     (result) => {
-                        console.log(result)
-                        this.setState({searchResults:result})
+                        console.log(result.hits)
+                        let results
+                        for(let i = 0;i<result.hits.length;i++){
+                            console.log(result.hits[i].title)
+                            results += `<div>`+result.hits[i].title+`</div>`
+                            
+                        }
+                        console.log(results)
+                        this.setState({searchResults:results})
+                        
                     },
 
                     (error) => {
@@ -97,7 +103,7 @@ constructor(props){
 
                 </form>
                 <p>http://hn.algolia.com/api/v1/search{this.state.searchby}{this.state.text}{this.state.searchtype}</p>
-                <Results searchResults={this.state.searchResults}/>
+                {this.state.searchResults}
             </div>
 
         )
