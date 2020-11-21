@@ -43,7 +43,7 @@ class Searchbar extends Component {
         //makes sure searchbar isnt empty before searching 
         if (text !== "" || text.replace(/\s/g, "") !== "") {
             console.log(tag)
-            if (tag === "&author_") {
+            if (tag === "&tags=author_") {
                 query = defaultCall + searchBy + tag + text
             }
             else {
@@ -59,9 +59,9 @@ class Searchbar extends Component {
                         let results = []
                         results = result.hits.map(data =>
                             <div className="col-md-3 m-2 border-dark">
-                                <div>{data.title}</div>
-                                <div>{data.author}</div>
-                                <div>{data.created_at}</div>
+                                <h3>{data.title}</h3>
+                                <h4>by {data.author}</h4>
+                                <p>{data.created_at}</p>
                             </div>)
                         console.log(results)
                         this.setState({ searchResults: results })
