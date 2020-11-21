@@ -2,17 +2,18 @@ import React, { Component } from 'react';
 
 
 class Searchbar extends Component {
-constructor(props){
-    super(props)
-    this.state = {
-        searchtype: "",
-        searchby: "?query=",
-        text: "",
-        searchResults: []
-    };
-}
-    //default search filter is "story"
-    
+    constructor(props) {
+        super(props)
+        // searchby is default query
+        this.state = {
+            searchtype: "",
+            searchby: "?query=",
+            text: "",
+            searchResults: []
+        };
+    }
+   
+
 
     // when search filter is changed
     handleSearchChange = (event) => {
@@ -22,22 +23,24 @@ constructor(props){
     handleSearchByChange = (event) => {
         this.setState({ searchby: event.target.value });
     };
-
+    //when text is entered
     handleText = (event) => {
         this.setState({ text: event.target.value })
     }
 
-    
+
     // when search button is pressed
     buildAndCall = (event) => {
-        // stops reload
+        // stops reload from form submit
         event.preventDefault();
+        //basic api call 
         const defaultCall = "http://hn.algolia.com/api/v1/search"
+        // assigns variables using the state of the search bar
         let text = this.state.text;
         let tag = this.state.searchtype;
         let searchBy = this.state.searchby;
         let query;
-
+        //makes sure searchbar isnt empty before searching 
         if (text !== "" || text.replace(/\s/g, "") !== "") {
             console.log(tag)
             if (tag === "&author_") {
@@ -47,21 +50,22 @@ constructor(props){
                 query = defaultCall + searchBy + text + tag
             }
             console.log("searching " + query);
-            
+            //api call
             fetch(query)
                 .then(res => res.json())
                 .then(
                     (result) => {
-                        console.log(result.hits)
-                        let results
-                        for(let i = 0;i<result.hits.length;i++){
-                            console.log(result.hits[i].title)
-                            results += `<div>`+result.hits[i].title+`</div>`
-                            
-                        }
+                        //returned data is formated and saved to state
+                        let results = []
+                        results = result.hits.map(data =>
+                            <div className="col-md-3 m-2 border-dark">
+                                <div>{data.title}</div>
+                                <div>{data.author}</div>
+                                <div>{data.created_at}</div>
+                            </div>)
                         console.log(results)
-                        this.setState({searchResults:results})
-                        
+                        this.setState({ searchResults: results })
+
                     },
 
                     (error) => {
@@ -70,13 +74,14 @@ constructor(props){
                         });
                     }
                 )
-            this.setState({searchResults:query})
+            
 
         }
-        else { console.log("fill in search bar") }
+        else { this.setState({searchResults:<div className="text-danger">please fill in search box</div>}) }
     };
 
     render() {
+
         return (
             <div>
                 {/* title */}
@@ -102,8 +107,11 @@ constructor(props){
                     <button onClick={this.buildAndCall}>Search</button>
 
                 </form>
-                <p>http://hn.algolia.com/api/v1/search{this.state.searchby}{this.state.text}{this.state.searchtype}</p>
-                {this.state.searchResults}
+                {/* results box */}
+                <div>
+                    {this.state.searchResults}
+                </div>
+
             </div>
 
         )
