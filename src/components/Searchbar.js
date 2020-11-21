@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import {useSelector} from "react-redux"
 
 
 class Searchbar extends Component {
@@ -14,7 +15,7 @@ class Searchbar extends Component {
     }
    
 
-
+    
     // when search filter is changed
     handleSearchChange = (event) => {
         this.setState({ searchtype: event.target.value });
@@ -31,6 +32,8 @@ class Searchbar extends Component {
 
     // when search button is pressed
     buildAndCall = (event) => {
+        
+        // store.dispatch(saveSearch())
         // stops reload from form submit
         event.preventDefault();
         //basic api call 
@@ -81,7 +84,7 @@ class Searchbar extends Component {
     };
 
     render() {
-
+        
         return (
             <div>
                 {/* title */}
@@ -108,6 +111,9 @@ class Searchbar extends Component {
 
                 </form>
                 {/* results box */}
+                <div>
+                
+                </div>
                 <div>
                     {this.state.searchResults}
                 </div>

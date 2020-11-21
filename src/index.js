@@ -4,12 +4,41 @@ import './index.css';
 import App from './App';
 import Searchbar from './components/Searchbar'
 import reportWebVitals from './reportWebVitals';
+import { createStore } from "redux";
 
+import { Provider } from "react-redux"
+
+//store
+
+// action
+// function saveSearch(search) {
+//   return {
+//     type: "SAVE_HISTORY",
+//     search,
+//   }
+// }
+//reducer
+// const history = (state = [], action) => {
+//   return state + 1;
+// }
+const store = createStore(() => ({
+  searchHistory: [
+    {
+      name: 'robin',
+      views: 1
+    }
+  ]
+}));
+// store.subscribe(() => console.log(store.getState()))
+//dispatch
+// store.dispatch(saveSearch("foo"))
 ReactDOM.render(
-  <React.StrictMode>
-    <App />
-    <Searchbar/>
-  </React.StrictMode>,
+  <Provider store={store}>
+    <React.StrictMode>
+      <App />
+      <Searchbar />
+    </React.StrictMode>
+  </Provider>,
   document.getElementById('root')
 );
 
