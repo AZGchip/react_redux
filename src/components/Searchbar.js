@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {useSelector} from "react-redux"
+import { connect } from "react-redux"
 
 
 class Searchbar extends Component {
@@ -13,9 +13,9 @@ class Searchbar extends Component {
             searchResults: []
         };
     }
-   
 
-    
+
+
     // when search filter is changed
     handleSearchChange = (event) => {
         this.setState({ searchtype: event.target.value });
@@ -25,21 +25,25 @@ class Searchbar extends Component {
         this.setState({ searchby: event.target.value });
     };
     //when text is entered
-    handleText = (event) => {
-        this.setState({ text: event.target.value })
+    handleTextChange = (event) => {
+        this.props.onChangeName(event.target.value)
     }
 
-
+    handleNameChange = (event) => {
+        
+      }
     // when search button is pressed
     buildAndCall = (event) => {
-        
+
         // store.dispatch(saveSearch())
         // stops reload from form submit
         event.preventDefault();
+        //update redux through 
+        this.props.onAddName()
         //basic api call 
         const defaultCall = "http://hn.algolia.com/api/v1/search"
         // assigns variables using the state of the search bar
-        let text = this.state.text;
+        let text = this.props.text;
         let tag = this.state.searchtype;
         let searchBy = this.state.searchby;
         let query;
@@ -77,19 +81,19 @@ class Searchbar extends Component {
                         });
                     }
                 )
-            
+
 
         }
-        else { this.setState({searchResults:<div className="text-danger">please fill in search box</div>}) }
+        else { this.setState({ searchResults: <div className="text-danger">please fill in search box</div> }) }
     };
 
     render() {
-        
+
         return (
-            <div>
+            <div className="container">
                 {/* title */}
-                <h2>Hacker News Searcher</h2>
-                <form>
+                <h2 className="row text-center">Hacker News Searcher</h2><hr/>
+                <form className="col-md-8">
                     {/* Radio buttons */}
                     <input type="radio" name="searchfilter" value="&tags=story" id="story" onChange={this.handleSearchChange} />
                     <label htmlFor="story">Story</label>
@@ -101,7 +105,7 @@ class Searchbar extends Component {
                     <label htmlFor="author">Author</label>
                     <br />
                     {/* search box */}
-                    <input type="text" onChange={this.handleText} />
+                    <input type="text" onChange={this.handleTextChange} />
                     {/* date/relevence selector */}
                     <select onChange={this.handleSearchByChange}>
                         <option value="?query=">Relevance</option>
@@ -110,11 +114,14 @@ class Searchbar extends Component {
                     <button onClick={this.buildAndCall}>Search</button>
 
                 </form>
+                    <div className="col-md-4">
+                        <h4>Previous Searches</h4>
+                        {this.props.searches && this.props.searches.map(text => (
+                            <div className="" key={text}> {text}</div>
+                        ))}
+                    </div>
                 {/* results box */}
-                <div>
-                
-                </div>
-                <div>
+                <div className="row ">
                     {this.state.searchResults}
                 </div>
 
@@ -123,12 +130,24 @@ class Searchbar extends Component {
         )
     }
 }
+//allows the component to access redux state by adding it to props
+const mapStatetoProps = (state) => {
+    return {
+        text: state.text,
+        searches: state.searches
+    }
+}
+//allows the component to manipulate the redux state
+const mapDispatchtoProps = (dispatch) => {
+    return {
+        onChangeName: (text) => dispatch({ type: "CHANGE_TEXT", text: text }),
+        onAddName: () => dispatch({ type: "ADD_SEARCH" }),
+    }
+}
 
 
 
 
 
 
-
-
-export default Searchbar
+export default connect(mapStatetoProps, mapDispatchtoProps)(Searchbar);
