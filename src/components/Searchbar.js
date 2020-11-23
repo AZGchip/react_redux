@@ -32,9 +32,7 @@ class Searchbar extends Component {
     handleTextChange = (event) => {
         //update redux state for text
         this.props.onChangeText(event.target.value);
-
     }
-
 
     // when search button is pressed
     buildAndCall = (event) => {
@@ -83,8 +81,6 @@ class Searchbar extends Component {
                         });
                     }
                 )
-
-
         }
         // if text box is empty, tell user to fill in box before searching 
         else { this.setState({ searchResults: <div className="text-danger row">please fill in search box</div> }) }
@@ -130,7 +126,6 @@ class Searchbar extends Component {
                     </form>
 
                     {/* Saved redux state box */}
-
                     <div className="col-md-4 ">
                         <h4>Previous Searches</h4>
                         <div className="scroll">
@@ -140,13 +135,12 @@ class Searchbar extends Component {
                         </div>
                     </div>
                 </div>
+
                 {/* api results box */}
                 <div className="row ">
                     {this.state.searchResults}
                 </div>
-
             </div>
-
         )
     }
 }
